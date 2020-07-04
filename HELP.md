@@ -1,2 +1,3 @@
 # Read Me First
-run jacoco: mvn clean verify
+run tests: mvn clean verify
+report jacoco: /user-api/target/site/jacoco/index.html
