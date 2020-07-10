@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -29,6 +30,11 @@ public class UserGatewayImpl implements UserGateway {
     }
 
     @Override
+    public void delete(User user) {
+        userRepository.delete(userToUserDBConverter.convert(user));
+    }
+
+    @Override
     public List<User> findAll() {
         return userRepository.findAll()
                 .stream()
@@ -42,5 +48,11 @@ public class UserGatewayImpl implements UserGateway {
                 .stream()
                 .map(userDBToUserConverter::convert)
                 .collect(toList());
+    }
+
+    @Override
+    public Optional<User> findByCpf(String cpf) {
+        return ofNullable(userRepository.findByCpf(cpf))
+                .map(userDBToUserConverter::convert);
     }
 }

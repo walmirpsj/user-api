@@ -8,4 +8,5 @@ import java.util.List;
 public interface UserRepository extends MongoRepository<UserDB, String> {
 
     List<UserDB> findByNameOrCpfOrEmailOrPhone(String name, String cpf, String email, String phone);
+    UserDB findByCpf(String cpf);
 }

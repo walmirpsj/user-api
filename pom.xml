@@ -39,11 +39,11 @@
 			<artifactId>modelmapper</artifactId>
 			<version>2.3.4</version>
 		</dependency>
-		<!--<dependency>
+		<dependency>
 			<groupId>br.com.caelum.stella</groupId>
 			<artifactId>caelum-stella-core</artifactId>
-			<version>2.1.0</version>
-		</dependency>-->
+			<version>2.1.2</version>
+		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
@@ -60,6 +60,14 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>jcenter-snapshots</id>
+			<name>jcenter</name>
+			<url>http://oss.jfrog.org/artifactory/oss-snapshot-local/</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<plugins>

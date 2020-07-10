@@ -59,7 +59,7 @@ public class UserControllerTest {
 
         when(findAllUserUseCase.execute()).thenReturn(List.of(userResponse1, userResponse2));
 
-        final var response = userController.findAll(UserResource.builder().build());
+        final var response = userController.findAll();
 
         assertNotNull(response);
         assertTrue(response.size() > 0);
