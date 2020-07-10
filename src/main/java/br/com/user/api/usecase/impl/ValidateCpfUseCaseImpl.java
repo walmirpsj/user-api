@@ -17,7 +17,7 @@ public class ValidateCpfUseCaseImpl implements ValidateCpfUseCase {
         try{
             new CPFValidator().assertValid(cpf);
         } catch (InvalidStateException e){
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, INVALID_CPF);
+            throw new HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY, INVALID_CPF);
         }
     }
 }

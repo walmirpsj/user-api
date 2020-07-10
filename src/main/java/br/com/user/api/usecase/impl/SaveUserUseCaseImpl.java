@@ -2,7 +2,6 @@ package br.com.user.api.usecase.impl;
 
 import br.com.user.api.domain.User;
 import br.com.user.api.usecase.SaveUserUseCase;
-import br.com.user.api.usecase.ValidateCpfUseCase;
 import br.com.user.api.usecase.gateway.UserGateway;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,11 +13,9 @@ import org.springframework.web.client.HttpClientErrorException;
 public class SaveUserUseCaseImpl implements SaveUserUseCase {
 
     private final UserGateway userGateway;
-    private final ValidateCpfUseCase validateCpfUseCase;
 
     @Override
     public void execute(User user) {
-        validateCpfUseCase.execute(user.getCpf());
         userGateway.findByCpf(user.getCpf())
                 .ifPresentOrElse(userToSave -> getExceptionUserAlreadyExisting(),
                         () -> userGateway.save(user));
