@@ -16,7 +16,7 @@ public class DeleteUserUseCaseImpl implements DeleteUserUseCase {
     @Override
     public void execute(String cpf) {
         userGateway.findByCpf(cpf)
-                .ifPresentOrElse(userGateway::delete, () -> getExceptionUserNotFound());
+                .ifPresentOrElse(userGateway::delete, this::getExceptionUserNotFound);
     }
 
     private void getExceptionUserNotFound() {

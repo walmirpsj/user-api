@@ -24,9 +24,7 @@ public class UserGatewayImpl implements UserGateway {
 
     @Override
     public void save(User user) {
-        ofNullable(user)
-                .map(userToUserDBConverter::convert)
-                .map(userRepository::save);
+        userRepository.save(userToUserDBConverter.convert(user));
     }
 
     @Override
@@ -37,14 +35,6 @@ public class UserGatewayImpl implements UserGateway {
     @Override
     public List<User> findAll() {
         return userRepository.findAll()
-                .stream()
-                .map(userDBToUserConverter::convert)
-                .collect(toList());
-    }
-
-    public List<User> findByFilters(User user) {
-        return userRepository.findByNameOrCpfOrEmailOrPhone(
-                user.getName(), user.getCpf(), user.getEmail(), user.getPhone())
                 .stream()
                 .map(userDBToUserConverter::convert)
                 .collect(toList());

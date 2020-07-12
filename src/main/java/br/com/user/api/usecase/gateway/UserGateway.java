@@ -10,6 +10,5 @@ public interface UserGateway {
     void save(User user);
     void delete(User user);
     List<User> findAll();
-    List<User> findByFilters(User user);
     Optional<User> findByCpf(String cpf);
 }

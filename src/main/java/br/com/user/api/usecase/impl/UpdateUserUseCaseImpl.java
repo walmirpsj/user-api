@@ -25,7 +25,7 @@ public class UpdateUserUseCaseImpl implements UpdateUserUseCase {
                        .phone(user.getPhone())
                        .build();
                userGateway.save(userToUpdate);
-           }, () -> getExceptionUserNotFound());
+           }, this::getExceptionUserNotFound);
     }
 
     private void getExceptionUserNotFound() {
