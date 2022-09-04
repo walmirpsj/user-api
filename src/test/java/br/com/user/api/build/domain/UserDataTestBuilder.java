@@ -19,4 +19,15 @@ public class UserDataTestBuilder {
                 .cpf("1111111111111")
                 .build();
     }
+
+    public static User getUserResponse(){
+        return User
+                .builder()
+                .id("123abc")
+                .cpf("99999999999")
+                .email("teste.teste@gmail.com")
+                .name("Fulano")
+                .phone("998811122")
+                .build();
+    }
 }

@@ -1,7 +1,6 @@
 package br.com.user.api.usecase;
 
 import br.com.user.api.build.domain.UserDataTestBuilder;
-import br.com.user.api.domain.User;
 import br.com.user.api.usecase.gateway.UserGateway;
 import br.com.user.api.usecase.impl.FindAllUserUseCaseImpl;
 import org.junit.Test;

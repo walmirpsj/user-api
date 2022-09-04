@@ -6,8 +6,7 @@ import br.com.user.api.controller.converter.UserResourceToUserConverter;
 import br.com.user.api.controller.converter.UserToUserResourceConverter;
 import br.com.user.api.controller.resource.UserResource;
 import br.com.user.api.domain.User;
-import br.com.user.api.usecase.FindAllUserUseCase;
-import br.com.user.api.usecase.SaveUserUseCase;
+import br.com.user.api.usecase.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -30,7 +29,13 @@ public class UserControllerTest {
     @Mock
     private SaveUserUseCase saveUserUseCase;
     @Mock
+    private UpdateUserUseCase updateUserUseCase;
+    @Mock
+    private DeleteUserUseCase deleteUserUseCase;
+    @Mock
     private FindAllUserUseCase findAllUserUseCase;
+    @Mock
+    private ValidateCpfUseCase validateCpfUseCase;
     @Spy
     private UserResourceToUserConverter userResourceToUserConverter
             = new UserResourceToUserConverter(new ModelMapper());
@@ -42,12 +47,36 @@ public class UserControllerTest {
     public void shoulSaveUser(){
         final var userRequest = UserResourceDataTestBuilder.getUserResource();
 
+        doNothing().when(validateCpfUseCase).execute(anyString());
         doNothing().when(saveUserUseCase).execute(any(User.class));
 
-       userController.save(userRequest);
+        userController.save(userRequest);
 
         verify(saveUserUseCase, atLeastOnce()).execute(any(User.class));
         verify(userResourceToUserConverter, atLeastOnce()).convert(any(UserResource.class));
+    }
+
+    @Test
+    public void shoulUpdateUser(){
+        final var userRequest = UserResourceDataTestBuilder.getUserResource();
+
+        doNothing().when(validateCpfUseCase).execute(anyString());
+        doNothing().when(updateUserUseCase).execute(any(User.class));
+
+        userController.update(userRequest);
+
+        verify(updateUserUseCase, atLeastOnce()).execute(any(User.class));
+        verify(userResourceToUserConverter, atLeastOnce()).convert(any(UserResource.class));
+    }
+
+    @Test
+    public void shoulDeleteUser(){
+        doNothing().when(validateCpfUseCase).execute(anyString());
+        doNothing().when(deleteUserUseCase).execute(anyString());
+
+        userController.delete("99999999999");
+
+        verify(deleteUserUseCase, atLeastOnce()).execute(anyString());
     }
 
     @Test
@@ -57,7 +86,7 @@ public class UserControllerTest {
 
         when(findAllUserUseCase.execute()).thenReturn(List.of(userResponse1, userResponse2));
 
-        final var response = userController.findAll(UserResource.builder().build());
+        final var response = userController.findAll();
 
         assertNotNull(response);
         assertTrue(response.size() > 0);

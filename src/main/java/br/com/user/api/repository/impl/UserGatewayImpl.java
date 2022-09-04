@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -24,9 +25,12 @@ public class UserGatewayImpl implements UserGateway {
 
     @Override
     public void save(User user) {
-        ofNullable(user)
-                .map(userToUserDBConverter::convert)
-                .map(userRepository::save);
+        userRepository.save(userToUserDBConverter.convert(user));
+    }
+
+    @Override
+    public void delete(User user) {
+        userRepository.delete(userToUserDBConverter.convert(user));
     }
 
     @Override
@@ -37,11 +41,9 @@ public class UserGatewayImpl implements UserGateway {
                 .collect(toList());
     }
 
-    public List<User> findByFilters(User user) {
-        return userRepository.findByNameOrCpfOrEmailOrPhone(
-                user.getName(), user.getCpf(), user.getEmail(), user.getPhone())
-                .stream()
-                .map(userDBToUserConverter::convert)
-                .collect(toList());
+    @Override
+    public Optional<User> findByCpf(String cpf) {
+        return ofNullable(userRepository.findByCpf(cpf))
+                .map(userDBToUserConverter::convert);
     }
 }
