@@ -47,7 +47,6 @@ public class UserGatewayImplTest {
 
         verify(userRepository, atLeastOnce()).save(any(UserDB.class));
         verify(userToUserDBConverter, atLeastOnce()).convert(any(User.class));
-        verify(userDBToUserConverter, atLeastOnce()).convert(any(UserDB.class));
     }
 
     @Test
@@ -57,7 +56,7 @@ public class UserGatewayImplTest {
 
         when(userRepository.findAll()).thenReturn(List.of(userDB1, userDB2));
 
-        final var response = userGateway.findByFilters(User.builder().build());
+        final var response = userGateway.findAll();
 
         assertNotNull(response);
         assertTrue(response.size() > 0);

@@ -6,6 +6,7 @@ import br.com.user.api.repository.converter.UserDBToUserConverter;
 import br.com.user.api.repository.converter.UserToUserDBConverter;
 import br.com.user.api.usecase.gateway.UserGateway;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,7 +15,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserGatewayImpl implements UserGateway {
 
     private final UserRepository userRepository;

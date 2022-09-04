@@ -78,11 +78,11 @@
 				<version>0.8.4</version>
 				<configuration>
 					<excludes>
-						<exclude>**/userapi/controller/resource/**</exclude>
-						<exclude>**/userapi/repository/model/**</exclude>
-						<exclude>**/userapi/config/**</exclude>
-						<exclude>**/userapi/domain/**</exclude>
-						<exclude>**/userapi/UserApiApplication.*</exclude>
+						<exclude>**/api/controller/resource/**</exclude>
+						<exclude>**/api/repository/model/**</exclude>
+						<exclude>**/api/config/**</exclude>
+						<exclude>**/api/domain/**</exclude>
+						<exclude>**/api/UserApiApplication.*</exclude>
 					</excludes>
 				</configuration>
 				<executions>
@@ -112,7 +112,7 @@
 										<limit>
 											<counter>LINE</counter>
 											<value>COVEREDRATIO</value>
-											<minimum>0.8</minimum>
+											<minimum>0.6</minimum>
 										</limit>
 									</limits>
 								</rule>

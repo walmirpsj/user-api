@@ -3,11 +3,12 @@ package br.com.user.api.controller.converter;
 import br.com.user.api.controller.resource.UserResource;
 import br.com.user.api.domain.User;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserToUserResourceConverter {
 
     private final ModelMapper modelMapper;

@@ -6,6 +6,7 @@ import br.com.user.api.controller.resource.UserResource;
 import br.com.user.api.usecase.FindAllUserUseCase;
 import br.com.user.api.usecase.SaveUserUseCase;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/user")
 public class UserController {

@@ -40,7 +40,6 @@ public class UserControllerTest {
 
     @Test
     public void shoulSaveUser(){
-        final var userResponse = UserDataTestBuilder.getUser1();
         final var userRequest = UserResourceDataTestBuilder.getUserResource();
 
         doNothing().when(saveUserUseCase).execute(any(User.class));
@@ -49,7 +48,6 @@ public class UserControllerTest {
 
         verify(saveUserUseCase, atLeastOnce()).execute(any(User.class));
         verify(userResourceToUserConverter, atLeastOnce()).convert(any(UserResource.class));
-        verify(userToUserResourceConverter, atLeastOnce()).convert(any(User.class));
     }
 
     @Test

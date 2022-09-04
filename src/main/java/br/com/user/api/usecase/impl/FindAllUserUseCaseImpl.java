@@ -4,12 +4,13 @@ import br.com.user.api.domain.User;
 import br.com.user.api.usecase.FindAllUserUseCase;
 import br.com.user.api.usecase.gateway.UserGateway;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class FindAllUserUseCaseImpl implements FindAllUserUseCase {
 
     private final UserGateway userGateway;
