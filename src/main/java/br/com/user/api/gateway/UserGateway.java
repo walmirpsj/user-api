@@ -1,4 +1,4 @@
-package br.com.user.api.usecase.gateway;
+package br.com.user.api.gateway;
 
 import br.com.user.api.domain.User;
 

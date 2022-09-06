@@ -2,8 +2,7 @@ package br.com.user.api.usecase.impl;
 
 import br.com.user.api.domain.User;
 import br.com.user.api.usecase.FindAllUserUseCase;
-import br.com.user.api.usecase.gateway.UserGateway;
-import lombok.AllArgsConstructor;
+import br.com.user.api.gateway.UserGateway;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

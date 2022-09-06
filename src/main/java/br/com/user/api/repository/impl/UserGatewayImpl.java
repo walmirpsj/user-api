@@ -4,8 +4,7 @@ import br.com.user.api.domain.User;
 import br.com.user.api.repository.UserRepository;
 import br.com.user.api.repository.converter.UserDBToUserConverter;
 import br.com.user.api.repository.converter.UserToUserDBConverter;
-import br.com.user.api.usecase.gateway.UserGateway;
-import lombok.AllArgsConstructor;
+import br.com.user.api.gateway.UserGateway;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
