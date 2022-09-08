@@ -1,47 +1,63 @@
 package br.com.user.api.usecase;
 
-import br.com.user.api.build.domain.UserDataTestBuilder;
+import br.com.user.api.build.GitHubUserDataTestBuilder;
+import br.com.user.api.build.TemplateLoaderUtil;
+import br.com.user.api.build.UserDataTestBuilder;
 import br.com.user.api.domain.User;
-import br.com.user.api.gateway.UserGateway;
+import br.com.user.api.usecase.gateway.GitHubGateway;
+import br.com.user.api.usecase.gateway.UserGateway;
 import br.com.user.api.usecase.impl.SaveUserUseCaseImpl;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
-import static java.util.Optional.of;
+import java.util.Optional;
+
+import static br.com.user.api.build.ExampleType.VALID;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SaveUserUseCaseImplTest {
 
     @InjectMocks
     private SaveUserUseCaseImpl saveUserUseCase;
     @Mock
     private UserGateway userGateway;
+    @Mock
+    private GitHubGateway gitHubGateway;
+
+    @BeforeAll
+    public static void setUp() {
+        TemplateLoaderUtil.load();
+    }
 
     @Test
     public void shouldExecuteSaveUser(){
-        final var user = UserDataTestBuilder.getUser1();
+        final var user = UserDataTestBuilder.get(VALID);
 
-        doNothing().when(userGateway).save(any(User.class));
+        when(gitHubGateway.findUserByLogin(anyString())).thenReturn(GitHubUserDataTestBuilder.getOptional(VALID));
 
         saveUserUseCase.execute(user);
 
         verify(userGateway, atLeastOnce()).save(any(User.class));
     }
 
-    @Test(expected = HttpClientErrorException.class)
+    @Test
     public void shouldThrowExceptionToTrySaveUser(){
-        final var user = UserDataTestBuilder.getUser1();
-        final var userOptional = of(UserDataTestBuilder.getUserResponse());
+        User user = UserDataTestBuilder.get(VALID);
+        when(userGateway.findByCpf(anyString())).thenReturn(Optional.of(user));
 
-        when(userGateway.findByCpf(anyString())).thenReturn(userOptional);
-
-        saveUserUseCase.execute(user);
+        final var exception = assertThrows(
+                HttpClientErrorException.class,
+                () -> saveUserUseCase.execute(user));
+        assertNotNull(exception, exception.getMessage());
     }
 
 }

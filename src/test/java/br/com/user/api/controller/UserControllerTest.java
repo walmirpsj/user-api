@@ -1,98 +1,106 @@
 package br.com.user.api.controller;
 
-import br.com.user.api.build.controller.UserResourceDataTestBuilder;
-import br.com.user.api.build.domain.UserDataTestBuilder;
-import br.com.user.api.controller.converter.UserResourceToUserConverter;
-import br.com.user.api.controller.converter.UserToUserResourceConverter;
+import br.com.user.api.build.TemplateLoaderUtil;
+import br.com.user.api.build.UserDataTestBuilder;
+import br.com.user.api.build.UserResourceDataTestBuilder;
 import br.com.user.api.controller.resource.UserResource;
-import br.com.user.api.domain.User;
 import br.com.user.api.usecase.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.modelmapper.ModelMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
+import java.util.stream.Stream;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static br.com.user.api.build.ExampleType.VALID;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(controllers = UserController.class)
 public class UserControllerTest {
 
-    @InjectMocks
-    private UserController userController;
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
     private SaveUserUseCase saveUserUseCase;
-    @Mock
+    @MockBean
     private UpdateUserUseCase updateUserUseCase;
-    @Mock
+    @MockBean
     private DeleteUserUseCase deleteUserUseCase;
-    @Mock
+    @MockBean
     private FindAllUserUseCase findAllUserUseCase;
-    @Mock
+    @MockBean
     private ValidateCpfUseCase validateCpfUseCase;
-    @Spy
-    private UserResourceToUserConverter userResourceToUserConverter
-            = new UserResourceToUserConverter(new ModelMapper());
-    @Spy
-    private UserToUserResourceConverter userToUserResourceConverter
-            = new UserToUserResourceConverter(new ModelMapper());
 
-    @Test
-    public void shoulSaveUser(){
-        final var userRequest = UserResourceDataTestBuilder.getUserResource();
+    @BeforeAll
+    public static void setUp() {
+        TemplateLoaderUtil.load();
+    }
 
-        doNothing().when(validateCpfUseCase).execute(anyString());
-        doNothing().when(saveUserUseCase).execute(any(User.class));
+    @ParameterizedTest
+    @MethodSource("exampleUserResourceValid")
+    @WithMockUser
+    void shouldSaveUser(UserResource userResource) throws Exception {
+        String writeValueAsString = objectMapper.writeValueAsString(userResource);
 
-        userController.save(userRequest);
+        this.mockMvc.perform(post("/users")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(writeValueAsString))
+                .andExpect(status().isCreated());
+    }
 
-        verify(saveUserUseCase, atLeastOnce()).execute(any(User.class));
-        verify(userResourceToUserConverter, atLeastOnce()).convert(any(UserResource.class));
+    @ParameterizedTest
+    @MethodSource("exampleUserResourceValid")
+    @WithMockUser
+    void shouldUpdateUser(UserResource userResource) throws Exception {
+        String writeValueAsString = objectMapper.writeValueAsString(userResource);
+
+        this.mockMvc.perform(put("/users")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(writeValueAsString))
+                .andExpect(status().isOk());
     }
 
     @Test
-    public void shoulUpdateUser(){
-        final var userRequest = UserResourceDataTestBuilder.getUserResource();
-
-        doNothing().when(validateCpfUseCase).execute(anyString());
-        doNothing().when(updateUserUseCase).execute(any(User.class));
-
-        userController.update(userRequest);
-
-        verify(updateUserUseCase, atLeastOnce()).execute(any(User.class));
-        verify(userResourceToUserConverter, atLeastOnce()).convert(any(UserResource.class));
+    @WithMockUser
+    void shouldDeleteUsers() throws Exception {
+        this.mockMvc.perform(delete("/users/{cpf}", "123")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
-    public void shoulDeleteUser(){
-        doNothing().when(validateCpfUseCase).execute(anyString());
-        doNothing().when(deleteUserUseCase).execute(anyString());
-
-        userController.delete("99999999999");
-
-        verify(deleteUserUseCase, atLeastOnce()).execute(anyString());
+    @WithMockUser
+    void shouldFindAllUsers() throws Exception {
+        Mockito.when(findAllUserUseCase.execute()).thenReturn(UserDataTestBuilder.get(3, VALID));
+        this.mockMvc.perform(get("/users")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
-    @Test
-    public void shouldFindAll(){
-        final var userResponse1 = UserDataTestBuilder.getUser1();
-        final var userResponse2 = UserDataTestBuilder.getUser2();
-
-        when(findAllUserUseCase.execute()).thenReturn(List.of(userResponse1, userResponse2));
-
-        final var response = userController.findAll();
-
-        assertNotNull(response);
-        assertTrue(response.size() > 0);
-        assertEquals(userResponse1.getCpf(), response.stream().findFirst().get().getCpf());
-
-        verify(findAllUserUseCase, atLeastOnce()).execute();
-        verify(userToUserResourceConverter, atLeastOnce()).convert(any(User.class));
+    private static Stream<Arguments> exampleUserResourceValid() {
+        final var example = UserResourceDataTestBuilder.get(VALID);
+        return Stream.of(Arguments.of(example));
     }
 }

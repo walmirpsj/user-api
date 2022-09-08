@@ -6,9 +6,8 @@ spring:
     name: user-api
   data:
     mongodb:
-      uri: mongodb://mongo:123456@localhost:27888
-#      host: localhost
-#      port: 27888
+      uri: mongodb://localhost:27017/test
+
   jackson:
     serialization:
       write-dates-as-timestamps: false
@@ -16,6 +15,19 @@ spring:
 api:
   project:
     version: @project.version@
+  github-user:
+    url: https://api.github.com
+
+logging:
+  level:
+    br.com.user.api: debug
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 30000
+        readTimeout: 60000
 
 management:
   endpoint:

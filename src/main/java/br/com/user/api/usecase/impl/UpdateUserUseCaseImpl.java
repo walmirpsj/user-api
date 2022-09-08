@@ -2,7 +2,7 @@ package br.com.user.api.usecase.impl;
 
 import br.com.user.api.domain.User;
 import br.com.user.api.usecase.UpdateUserUseCase;
-import br.com.user.api.gateway.UserGateway;
+import br.com.user.api.usecase.gateway.UserGateway;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -23,12 +23,11 @@ public class UpdateUserUseCaseImpl implements UpdateUserUseCase {
                        .name(user.getName())
                        .email(user.getEmail())
                        .phone(user.getPhone())
+                       .gitHubUser(user.getGitHubUser())
                        .build();
                userGateway.save(userToUpdate);
-           }, this::getExceptionUserNotFound);
-    }
-
-    private void getExceptionUserNotFound() {
-        throw new HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY, "User not found to update");
+           }, () -> {
+               throw new HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY, "User not found to update");
+           });
     }
 }

@@ -4,8 +4,7 @@ import br.com.user.api.controller.converter.UserResourceToUserConverter;
 import br.com.user.api.controller.converter.UserToUserResourceConverter;
 import br.com.user.api.controller.resource.UserResource;
 import br.com.user.api.usecase.*;
-import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +16,7 @@ import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     private final SaveUserUseCase saveUserUseCase;
@@ -25,39 +24,36 @@ public class UserController {
     private final DeleteUserUseCase deleteUserUseCase;
     private final FindAllUserUseCase findAllUserUseCase;
     private final ValidateCpfUseCase validateCpfUseCase;
-    private final UserResourceToUserConverter userResourceToUserConverter;
-    private final UserToUserResourceConverter userToUserResourceConverter;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation("Register user")
+    @Operation(description = "Register user")
     public void save(@RequestBody @Valid final UserResource userResource){
         validateCpfUseCase.execute(userResource.getCpf());
-        saveUserUseCase.execute(
-                userResourceToUserConverter.convert(userResource));
+        saveUserUseCase.execute(UserResourceToUserConverter.convert(userResource));
     }
 
     @PutMapping
-    @ApiOperation("Update user")
+    @Operation(description = "Update user")
     public void update(@RequestBody @Valid final UserResource userResource){
         validateCpfUseCase.execute(userResource.getCpf());
         updateUserUseCase.execute(
-                userResourceToUserConverter.convert(userResource));
+                UserResourceToUserConverter.convert(userResource));
     }
 
     @DeleteMapping("/{cpf}")
-    @ApiOperation("Delete user by CPF")
+    @Operation(description = "Delete user by CPF")
     public void delete(@PathVariable final String cpf){
         validateCpfUseCase.execute(cpf);
         deleteUserUseCase.execute(cpf);
     }
 
     @GetMapping
-    @ApiOperation("Find all users")
+    @Operation(description = "Find all users")
     public List<UserResource> findAll(){
         return findAllUserUseCase.execute()
                 .stream()
-                .map(userToUserResourceConverter::convert)
+                .map(UserToUserResourceConverter::convert)
                 .collect(toList());
     }
 

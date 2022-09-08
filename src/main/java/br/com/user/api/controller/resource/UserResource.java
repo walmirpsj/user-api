@@ -17,4 +17,5 @@ public class UserResource {
     private String email;
     @NotBlank
     private String phone;
+    private String gitHubLogin;
 }

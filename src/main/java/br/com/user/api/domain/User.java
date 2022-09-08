@@ -15,6 +15,7 @@ public class User {
     private String cpf;
     private String email;
     private String phone;
+    private String gitHubLogin;
     private GitHubUser gitHubUser;
 
 }

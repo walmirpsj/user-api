@@ -1,4 +1,4 @@
-package br.com.user.api.domain;
+package br.com.user.api.repository.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GitHubUser {
+public class GitHubUserDB {
     private String id;
     private String login;
     private String htmlUrl;

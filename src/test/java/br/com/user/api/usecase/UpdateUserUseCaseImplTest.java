@@ -1,23 +1,26 @@
 package br.com.user.api.usecase;
 
-import br.com.user.api.build.domain.UserDataTestBuilder;
+import br.com.user.api.build.TemplateLoaderUtil;
+import br.com.user.api.build.UserDataTestBuilder;
 import br.com.user.api.domain.User;
-import br.com.user.api.gateway.UserGateway;
+import br.com.user.api.usecase.gateway.UserGateway;
 import br.com.user.api.usecase.impl.UpdateUserUseCaseImpl;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.Optional;
-
+import static br.com.user.api.build.ExampleType.VALID;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class UpdateUserUseCaseImplTest {
 
     @InjectMocks
@@ -25,22 +28,27 @@ public class UpdateUserUseCaseImplTest {
     @Mock
     private UserGateway userGateway;
 
+    @BeforeAll
+    public static void setUp() {
+        TemplateLoaderUtil.load();
+    }
+
     @Test
     public void shouldExecuteUpdateUser(){
-        final var userResponse = Optional.of(UserDataTestBuilder.getUserResponse());
-        final var userRequest = UserDataTestBuilder.getUser1();
-
-        when(userGateway.findByCpf(anyString())).thenReturn(userResponse);
+        when(userGateway.findByCpf(anyString())).thenReturn(UserDataTestBuilder.getOptional(VALID));
         doNothing().when(userGateway).save(any(User.class));
 
-        updateUserUseCase.execute(userRequest);
+        updateUserUseCase.execute(UserDataTestBuilder.get(VALID));
 
         verify(userGateway, atLeastOnce()).save(any(User.class));
     }
 
-    @Test(expected = HttpClientErrorException.class)
+    @Test
     public void shouldThrowExceptionToUpdateUserNotFound(){
-        final var userRequest = UserDataTestBuilder.getUser1();
-        updateUserUseCase.execute(userRequest);
+        final var user = UserDataTestBuilder.get(VALID);
+        final var exception = assertThrows(
+                HttpClientErrorException.class,
+                () -> updateUserUseCase.execute(user));
+        assertNotNull(exception, exception.getMessage());
     }
 }

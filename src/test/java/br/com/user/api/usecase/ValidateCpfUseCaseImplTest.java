@@ -1,15 +1,16 @@
 package br.com.user.api.usecase;
 
 import br.com.user.api.usecase.impl.ValidateCpfUseCaseImpl;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ValidateCpfUseCaseImplTest {
 
     @InjectMocks
@@ -22,8 +23,11 @@ public class ValidateCpfUseCaseImplTest {
         assertNotNull(cpf);
     }
 
-    @Test(expected = HttpClientErrorException.class)
+    @Test
     public void shouldThrowExceptionToValidateCpf(){
-        validateCpfUseCase.execute("99999999999");
+        final var exception = assertThrows(
+                HttpClientErrorException.class,
+                () -> validateCpfUseCase.execute("99999999999"));
+        assertNotNull(exception, exception.getMessage());
     }
 }

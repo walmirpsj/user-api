@@ -23,6 +23,7 @@ public class UserDB {
     private String cpf;
     private String email;
     private String phone;
+    private GitHubUserDB gitHubUser;
     @CreatedDate
     private LocalDateTime createdDate;
     @LastModifiedDate

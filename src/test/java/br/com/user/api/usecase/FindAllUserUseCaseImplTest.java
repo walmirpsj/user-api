@@ -1,20 +1,22 @@
 package br.com.user.api.usecase;
 
-import br.com.user.api.build.domain.UserDataTestBuilder;
-import br.com.user.api.gateway.UserGateway;
+import br.com.user.api.build.UserDataTestBuilder;
+import br.com.user.api.build.TemplateLoaderUtil;
+import br.com.user.api.usecase.gateway.UserGateway;
 import br.com.user.api.usecase.impl.FindAllUserUseCaseImpl;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
+import static br.com.user.api.build.ExampleType.VALID;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class FindAllUserUseCaseImplTest {
 
     @InjectMocks
@@ -22,19 +24,20 @@ public class FindAllUserUseCaseImplTest {
     @Mock
     private UserGateway userGateway;
 
+    @BeforeAll
+    public static void setUp() {
+        TemplateLoaderUtil.load();
+    }
+
     @Test
     public void shouldExecuteFindAll(){
-        final var user1 = UserDataTestBuilder.getUser1();
-        final var user2 = UserDataTestBuilder.getUser2();
-
-        when(userGateway.findAll()).thenReturn(List.of(user1, user2));
+        when(userGateway.findAll()).thenReturn(UserDataTestBuilder.get(2, VALID));
 
         final var response = findUserUseCase.execute();
 
         assertNotNull(response);
         assertNotNull(response);
         assertTrue(response.size() > 0);
-        assertEquals(user1.getCpf(), response.stream().findFirst().get().getCpf());
 
         verify(userGateway, atLeastOnce()).findAll();
     }
