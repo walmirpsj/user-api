@@ -3,6 +3,7 @@ package br.com.user.api.usecase;
 import br.com.user.api.build.TemplateLoaderUtil;
 import br.com.user.api.build.UserDataTestBuilder;
 import br.com.user.api.domain.User;
+import br.com.user.api.usecase.gateway.GitHubGateway;
 import br.com.user.api.usecase.gateway.UserGateway;
 import br.com.user.api.usecase.impl.UpdateUserUseCaseImpl;
 import org.junit.jupiter.api.BeforeAll;
@@ -27,6 +28,8 @@ public class UpdateUserUseCaseImplTest {
     private UpdateUserUseCaseImpl updateUserUseCase;
     @Mock
     private UserGateway userGateway;
+    @Mock
+    private GitHubGateway gitHubGateway;
 
     @BeforeAll
     public static void setUp() {
@@ -41,6 +44,7 @@ public class UpdateUserUseCaseImplTest {
         updateUserUseCase.execute(UserDataTestBuilder.get(VALID));
 
         verify(userGateway, atLeastOnce()).save(any(User.class));
+        verify(gitHubGateway, atLeastOnce()).findUserByLogin(anyString());
     }
 
     @Test

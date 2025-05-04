@@ -3,8 +3,7 @@ package br.com.user.api.build;
 import br.com.six2six.fixturefactory.Fixture;
 import br.com.six2six.fixturefactory.Rule;
 import br.com.six2six.fixturefactory.loader.TemplateLoader;
-import br.com.user.api.build.ExampleType;
-import br.com.user.api.controller.resource.UserResource;
+import br.com.user.api.controller.resource.UserResourceRequest;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -19,7 +18,7 @@ public class UserResourceDataTestBuilder implements TemplateLoader {
     @Override
     public void load() {
         final var now = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
-        Fixture.of(UserResource.class)
+        Fixture.of(UserResourceRequest.class)
                 .addTemplate(VALID.name(), new Rule() {
                     {
                         add("name", random(randomString("User", 5)));
@@ -31,13 +30,13 @@ public class UserResourceDataTestBuilder implements TemplateLoader {
                 });
     }
 
-    public static UserResource get(ExampleType exampleType) {
-        return Fixture.from(UserResource.class).gimme(exampleType.name());
+    public static UserResourceRequest get(ExampleType exampleType) {
+        return Fixture.from(UserResourceRequest.class).gimme(exampleType.name());
     }
 
-    public static List<UserResource> get(Integer n, ExampleType exampleType) {
+    public static List<UserResourceRequest> get(Integer n, ExampleType exampleType) {
         return Fixture
-                .from(UserResource.class)
+                .from(UserResourceRequest.class)
                 .gimme(n, exampleType.name());
     }
 

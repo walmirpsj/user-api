@@ -3,7 +3,7 @@ package br.com.user.api.controller;
 import br.com.user.api.build.TemplateLoaderUtil;
 import br.com.user.api.build.UserDataTestBuilder;
 import br.com.user.api.build.UserResourceDataTestBuilder;
-import br.com.user.api.controller.resource.UserResource;
+import br.com.user.api.controller.resource.UserResourceRequest;
 import br.com.user.api.usecase.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
@@ -57,8 +57,8 @@ public class UserControllerTest {
     @ParameterizedTest
     @MethodSource("exampleUserResourceValid")
     @WithMockUser
-    void shouldSaveUser(UserResource userResource) throws Exception {
-        String writeValueAsString = objectMapper.writeValueAsString(userResource);
+    void shouldSaveUser(UserResourceRequest userResourceRequest) throws Exception {
+        String writeValueAsString = objectMapper.writeValueAsString(userResourceRequest);
 
         this.mockMvc.perform(post("/users")
                         .with(csrf())
@@ -70,8 +70,8 @@ public class UserControllerTest {
     @ParameterizedTest
     @MethodSource("exampleUserResourceValid")
     @WithMockUser
-    void shouldUpdateUser(UserResource userResource) throws Exception {
-        String writeValueAsString = objectMapper.writeValueAsString(userResource);
+    void shouldUpdateUser(UserResourceRequest userResourceRequest) throws Exception {
+        String writeValueAsString = objectMapper.writeValueAsString(userResourceRequest);
 
         this.mockMvc.perform(put("/users")
                         .with(csrf())

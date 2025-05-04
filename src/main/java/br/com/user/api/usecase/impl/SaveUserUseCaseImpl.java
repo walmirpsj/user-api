@@ -11,6 +11,8 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Objects;
 
+import static java.util.Objects.nonNull;
+
 @Service
 @RequiredArgsConstructor
 public class SaveUserUseCaseImpl implements SaveUserUseCase {
@@ -25,7 +27,7 @@ public class SaveUserUseCaseImpl implements SaveUserUseCase {
                     throw new HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY, "User already existing");
                 },
                 () -> {
-                    if(Objects.nonNull(user.getGitHubLogin())){
+                    if(nonNull(user.getGitHubLogin())){
                         final var gitHubUser = gitHubGateway.findUserByLogin(user.getGitHubLogin());
                         final var userWithGitHub = user.toBuilder()
                                 .gitHubUser(gitHubUser.orElse(null)).build();

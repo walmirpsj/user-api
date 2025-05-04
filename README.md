@@ -1,14 +1,12 @@
 # user-api
 CRUD of users using Clean Architecture pattern with Java 11 and unit tests with Jacoco.
 
-commands:
+#### Docker commands
+- docker compose -f docker/docker-compose-mongodb.yaml up
+- docker compose -f docker/docker-compose-sonarqube.yaml up
 
-sudo docker pull sonarqube
 
-sudo docker run -d -p 9000:9000 sonarqube
-
-run tests: mvn clean verify sonar:sonar
-
-report jacoco: /user-api/target/site/jacoco/index.html
+#### Jacoco Reports
+/user-api/target/site/jacoco/index.html
 
 

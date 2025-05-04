@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserResource {
+public class UserResourceRequest {
     @NotBlank
     private String name;
     @NotBlank

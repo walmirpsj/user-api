@@ -1,8 +1,9 @@
 package br.com.user.api.controller;
 
 import br.com.user.api.controller.converter.UserResourceToUserConverter;
-import br.com.user.api.controller.converter.UserToUserResourceConverter;
-import br.com.user.api.controller.resource.UserResource;
+import br.com.user.api.controller.converter.UserToUserResourceResponseConverter;
+import br.com.user.api.controller.resource.UserResourceRequest;
+import br.com.user.api.controller.resource.UserResourceResponse;
 import br.com.user.api.usecase.*;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -28,17 +29,17 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(description = "Register user")
-    public void save(@RequestBody @Valid final UserResource userResource){
-        validateCpfUseCase.execute(userResource.getCpf());
-        saveUserUseCase.execute(UserResourceToUserConverter.convert(userResource));
+    public void save(@RequestBody @Valid final UserResourceRequest userResourceRequest){
+        validateCpfUseCase.execute(userResourceRequest.getCpf());
+        saveUserUseCase.execute(UserResourceToUserConverter.convert(userResourceRequest));
     }
 
     @PutMapping
     @Operation(description = "Update user")
-    public void update(@RequestBody @Valid final UserResource userResource){
-        validateCpfUseCase.execute(userResource.getCpf());
+    public void update(@RequestBody @Valid final UserResourceRequest userResourceRequest){
+        validateCpfUseCase.execute(userResourceRequest.getCpf());
         updateUserUseCase.execute(
-                UserResourceToUserConverter.convert(userResource));
+                UserResourceToUserConverter.convert(userResourceRequest));
     }
 
     @DeleteMapping("/{cpf}")
@@ -50,10 +51,10 @@ public class UserController {
 
     @GetMapping
     @Operation(description = "Find all users")
-    public List<UserResource> findAll(){
+    public List<UserResourceResponse> findAll(){
         return findAllUserUseCase.execute()
                 .stream()
-                .map(UserToUserResourceConverter::convert)
+                .map(UserToUserResourceResponseConverter::convert)
                 .collect(toList());
     }
 
